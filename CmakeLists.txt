@@ -1,9 +1,19 @@
 cmake_minimum_required(VERSION 3.30)
 project(scpsolver)
 
-include_directories(${CMAKE_SOURCE_DIR}/ortools/include)
-link_directories(${CMAKE_SOURCE_DIR}/ortools/lib)
+add_executable(scpsolver src/server.cpp)
 
-add_executable(scpsolver server.cpp)
+target_include_directories(scpsolver PRIVATE /usr/local/include)
 
-target_link_libraries(${PROJECT_NAME} ortools)
+option(USE_STATIC_RABBITMQ "Link rabbitmq-c statically" OFF)
+
+if(USE_STATIC_RABBITMQ)
+    target_link_libraries(scpsolver PRIVATE /usr/local/lib/librabbitmq.a)
+    target_compile_definitions(scpsolver PRIVATE AMQP_STATIC)
+else()
+    if(APPLE)
+        target_link_libraries(scpsolver PRIVATE /usr/local/lib/librabbitmq.dylib)
+    else()
+        target_link_libraries(scpsolver PRIVATE /usr/local/lib/librabbitmq.so)
+    endif()
+endif()
