@@ -3,7 +3,20 @@ project(scpsolver)
 
 add_executable(scpsolver src/server.cpp)
 
-target_include_directories(scpsolver PRIVATE /usr/local/include)
+#[[target_include_directories(scpsolver PRIVATE /usr/local/include)]]
+
+set(ORTOOLS_ROOT /usr/local)
+
+target_include_directories(scpsolver PRIVATE
+    ${ORTOOLS_ROOT}/include
+)
+
+# Link OR-Tools libraries
+target_link_directories(scpsolver PRIVATE
+    ${ORTOOLS_ROOT}/lib
+)
+
+target_link_libraries(scpsolver PRIVATE ortools absl_synchronization absl_base protobuf)
 
 option(USE_STATIC_RABBITMQ "Link rabbitmq-c statically" OFF)
 

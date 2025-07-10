@@ -39,6 +39,14 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make
 sudo make install
 ```
+Install or-tools onto machine
+```
+git clone https://github.com/google/or-tools.git
+cd or-tools
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_DEPS=ON
+cmake --build build --config Release -j
+sudo cmake --build build --config Release --target install
+```
 
 #### Linux amd64
 ```
