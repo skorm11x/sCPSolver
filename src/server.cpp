@@ -1,5 +1,32 @@
-#include <iostream>
+#include <unistd.h>
+#include <map>
+#include <string>
+#include "CivetServer.h"
+
+#include "routes.h"
+
+#include "routes/RootHandler.h"
+#include "routes/CSPSolverHandler.h"
+
+using namespace std;
+
 int main() {
-    std::cout << "Hello, world" << std::endl;
+    const char *options[] = { "listening_ports", "8080", 0 };
+    CivetServer server(options);
+
+    RootHandler rootHandler;
+    CSPSolverHandler solveHandler;
+
+    map<string, CivetHandler*> route_map = {
+        {"/", &rootHandler},
+        {"/solve", &solveHandler}
+    };
+
+    for (const auto& [route, handler] : route_map) {
+        routes.push_back(route);
+        server.addHandler(route, *handler);
+    }
+
+    while (true) { sleep(1); }
     return 0;
 }

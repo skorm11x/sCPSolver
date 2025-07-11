@@ -1,58 +1,34 @@
 cmake_minimum_required(VERSION 3.30)
-project(scpsolver)
+project(scpsolver LANGUAGES CXX)
 
-add_executable(scpsolver src/server.cpp)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(USE_STATIC_RABBITMQ "Link rabbitmq-c statically" OFF)
+add_executable(scpsolver
+    src/server.cpp
+    src/routes.cpp
+    src/routes/RootHandler.cpp
+    src/routes/CSPSolverHandler.cpp
+    src/engine/CSPScheduler.cpp
+    lib/civetweb/src/CivetServer.cpp
+)
 
-# Set or-tools and rabbitmq-c config per OS
-if(WIN32)
-    set(ORTOOLS_ROOT "C:/or-tools")
-    set(RABBITMQ_LIB_DIR "C:/rabbitmq-c/lib")
-    set(RABBITMQ_STATIC_LIB "${RABBITMQ_LIB_DIR}/librabbitmq-static.lib")
-    set(RABBITMQ_SHARED_LIB "${RABBITMQ_LIB_DIR}/librabbitmq.4.lib")
+# TODO: move this within platform specific sections as well
+set(ORTOOLS_ROOT "${CMAKE_SOURCE_DIR}/lib/or-tools")
 
-    # Find OR-Tools package (assumes CMake config files are present)
-    set(CMAKE_PREFIX_PATH "${ORTOOLS_ROOT}")
-    find_package(ortools CONFIG REQUIRED)
-    target_link_libraries(scpsolver PRIVATE ortools::ortools)
+find_package(ortools REQUIRED PATHS ${ORTOOLS_ROOT}/lib/cmake/ortools NO_DEFAULT_PATH)
+target_link_libraries(scpsolver PRIVATE ortools::ortools)
 
-     if(USE_STATIC_RABBITMQ)
-        target_link_libraries(scpsolver PRIVATE ${RABBITMQ_STATIC_LIB})
-        target_compile_definitions(scpsolver PRIVATE AMQP_STATIC)
-    else()
-        target_link_libraries(scpsolver PRIVATE ${RABBITMQ_SHARED_LIB})
-    endif()
+if(APPLE)
+    target_include_directories(scpsolver PRIVATE ${CMAKE_SOURCE_DIR}/lib/civetweb/include)
+    target_link_directories(scpsolver PRIVATE ${CMAKE_SOURCE_DIR}/lib/civetweb)
+    target_link_libraries(scpsolver PRIVATE civetweb pthread dl)
 
-    # Windows CPack installer NSIS
-    include(CPack)
-    set(CPACK_GENERATOR "NSIS")
-    set(CPACK_PACKAGE_NAME "scpsolver")
-    set(CPACK_PACKAGE_VERSION "1.0")
-    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "scpsolver with OR-Tools and RabbitMQ")
-    set(CPACK_PACKAGE_VENDOR "Christopher J. Kosik")
-    set(CPACK_PACKAGE_EXECUTABLES "scpsolver" "SCP Solver")
+    set_target_properties(scpsolver PROPERTIES
+        BUILD_RPATH "/lib/civetweb"
+        INSTALL_RPATH "/lib/civetweb"
+        MACOSX_RPATH ON
+    )
 else()
-    set(ORTOOLS_ROOT "/usr/local")
-    target_include_directories(scpsolver PRIVATE
-        ${ORTOOLS_ROOT}/include
-    )
-    target_link_directories(scpsolver PRIVATE
-        ${ORTOOLS_ROOT}/lib
-    )
-    target_link_libraries(scpsolver PRIVATE ortools absl_synchronization absl_base protobuf)
-
-    if(USE_STATIC_RABBITMQ)
-        if(APPLE)
-            target_link_libraries(scpsolver PRIVATE /usr/local/lib/librabbitmq.a)
-            target_compile_definitions(scpsolver PRIVATE AMQP_STATIC)
-    else()
-        if(APPLE)
-            target_link_libraries(scpsolver PRIVATE /usr/local/lib/librabbitmq.dylib)
-        else()
-            target_link_libraries(scpsolver PRIVATE /usr/local/lib/librabbitmq.so)
-        endif()
-    endif()
-
-    # No plan yet for mac/unix pkgs
+    target_link_libraries(scpsolver PRIVATE civetweb pthread dl)
 endif()

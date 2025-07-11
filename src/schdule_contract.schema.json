@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SchedulingProblemRequest",
+  "type": "object",
+  "required": ["variables", "domains", "constraints"],
+  "properties": {
+    "callback_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "HTTP(s) URL to which the server will POST the scheduling solution."
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["int", "bool"] },
+          "domain": {
+            "type": "object",
+            "properties": {
+              "interval": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "values": {
+                "type": "array",
+                "items": { "type": "integer" }
+              }
+            },
+            "oneOf": [
+              { "required": ["interval"] },
+              { "required": ["values"] }
+            ]
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "variables"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "all_different", "linear", "allowed_assignments", "forbidden_assignments",
+              "implication", "element", "not_equal", "equal", "greater_than", "less_than"
+            ]
+          },
+          "variables": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata about the scheduling problem."
+    },
+    "objective": {
+      "type": "object",
+      "properties": {
+        "sense": { "type": "string", "enum": ["minimize", "maximize"] },
+        "expression": {
+          "type": "object",
+          "properties": {
+            "coefficients": {
+              "type": "object",
+              "additionalProperties": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

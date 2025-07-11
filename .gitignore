@@ -1,10 +1,13 @@
 # Misc files
 *.DS_Store
+*.zip
+*.tar
 
 # Build files
 *.o
 *.sln
 
-# Build dirs
+# Build & Lib dirs
 build/
-or-tools*/
+lib/
+or-tools*

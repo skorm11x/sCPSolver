@@ -15,18 +15,6 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.30.0/cmake-3.30.0
     ln -s /opt/cmake-3.30.0/bin/cmake /usr/local/bin/cmake && \
     rm /tmp/cmake-install.sh
 
-# Clone rabbitmq-c and its codegen submodule
-RUN git clone https://github.com/alanxz/rabbitmq-c.git /opt/rabbitmq-c && \
-    cd /opt/rabbitmq-c && \
-    git submodule update --init
-
-# Build and install rabbitmq-c
-RUN mkdir /opt/rabbitmq-c/build && \
-    cd /opt/rabbitmq-c/build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr && \
-    make && \
-    make install
-
 # Install or-tools src and build from src
 
 
