@@ -1,0 +1,11 @@
+{
+  "variables": [
+    {
+      "name": "x",
+      "type": "int",
+      "domain": {
+        "interval": [1, 10]
+      }
+    }
+  ]
+}

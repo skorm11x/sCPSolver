@@ -1,0 +1,37 @@
+{
+  "callback_url": "https://example.com/callback",
+  "variables": [
+    {
+      "name": "x",
+      "type": "int",
+      "domain": {
+        "interval": [1, 10]
+      }
+    },
+    {
+      "name": "y",
+      "type": "bool",
+      "domain": {
+        "values": [0, 1]
+      }
+    }
+  ],
+  "constraints": [
+    {
+      "type": "not_equal",
+      "variables": ["x", "y"]
+    }
+  ],
+  "metadata": {
+    "description": "Test scheduling problem"
+  },
+  "objective": {
+    "sense": "minimize",
+    "expression": {
+      "coefficients": {
+        "x": 1.0,
+        "y": 2.0
+      }
+    }
+  }
+}

@@ -76,3 +76,14 @@ Run
 #### Dockerfile
 WIP, update linux build and mac builds. Docker base needs to detect host ISA to pull right binaries
 
+### Examples
+
+#### Sudoku
+take from https://sandiway.arizona.edu/sudoku/examples.html
+O*(d^n) where d = domain size max, n = number variables
+
+basic sudoku tester
+
+## TODOS
+1. Start using the Google test suite instead of random curl bash scripts 
+2. 

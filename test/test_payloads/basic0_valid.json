@@ -1,0 +1,17 @@
+{
+  "variables": [
+    {
+      "name": "x",
+      "type": "int",
+      "domain": {
+        "interval": [1, 10]
+      }
+    }
+  ],
+  "constraints": [
+    {
+      "type": "all_different",
+      "variables": ["x"]
+    }
+  ]
+}

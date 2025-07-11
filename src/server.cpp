@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <map>
 #include <string>
+#include <iostream>
 #include "CivetServer.h"
 
 #include "routes.h"
@@ -26,6 +27,8 @@ int main() {
         routes.push_back(route);
         server.addHandler(route, *handler);
     }
+
+    cout << "started scpsolver at localhost:8080" << endl;
 
     while (true) { sleep(1); }
     return 0;

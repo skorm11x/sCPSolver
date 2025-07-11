@@ -1,0 +1,1 @@
+curl -X POST -H "Content-Type: application/json" -d @../test_payloads/basic0_invalid.json http://localhost:8080/solve

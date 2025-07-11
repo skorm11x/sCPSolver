@@ -2,18 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "SchedulingProblemRequest",
   "type": "object",
-  "required": ["variables", "domains", "constraints"],
+  "required": ["variables", "constraints"],
   "properties": {
     "callback_url": {
       "type": "string",
-      "format": "uri",
       "description": "HTTP(s) URL to which the server will POST the scheduling solution."
     },
     "variables": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "type"],
+        "required": ["name", "type", "domain"],
         "properties": {
           "name": { "type": "string" },
           "type": { "type": "string", "enum": ["int", "bool"] },

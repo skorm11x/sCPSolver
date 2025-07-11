@@ -1,7 +1,7 @@
 #pragma once
-#include <string>
+#include <nlohmann/json.hpp>
 
 class CSPScheduler {
 public:
-    std::string solveAndPrint();
+    nlohmann::json solve(const nlohmann::json& problem);
 };
