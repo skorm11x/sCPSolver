@@ -4,4 +4,6 @@
 class CSPScheduler {
 public:
     nlohmann::json solve(const nlohmann::json& problem);
+private:
+    nlohmann
 };
