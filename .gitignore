@@ -12,3 +12,6 @@ build/
 lib/
 bin/
 or-tools*
+
+# large test payloads
+test_payloads/
