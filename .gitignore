@@ -13,5 +13,8 @@ lib/
 bin/
 or-tools*
 
-# large test payloads
+# Large test payloads
 test_payloads/
+
+# Docs
+docs/

@@ -97,3 +97,9 @@ https://darkognu.eu/programming/tutorials/doxygen_tutorial_cpp/#installing-the-r
 brew install doxygen
 brew install graphviz
 ```
+
+generating docs:
+
+```
+cmake --build build --target docs
+```

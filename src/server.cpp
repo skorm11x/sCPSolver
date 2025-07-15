@@ -11,6 +11,11 @@
 
 using namespace std;
 
+/**
+ * @defgroup internal Internal workings
+ * @brief starts the Civetweb server and loads routes
+ * 
+ */
 int main() {
     const char *options[] = { "listening_ports", "8080", 0 };
     CivetServer server(options);

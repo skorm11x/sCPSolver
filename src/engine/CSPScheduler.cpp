@@ -1,11 +1,3 @@
-/**
- * @file CSPScheduler.cpp
- * @author skorm (skorm11x)
- * @brief 
- * @version 0.1
- * @date 2025-07-14
- */
-
 #include "CSPScheduler.h"
 #include <ortools/sat/cp_model.h>
 #include <ortools/sat/cp_model.pb.h>
@@ -20,12 +12,55 @@ using namespace sat;
 using namespace nlohmann;
 using namespace std;
 
+//TODO: explicitly define return JSON formats
 /**
- * @brief 
- * 
- * @param problem 
- * @return json 
+ * Solve a constraint satisfaction problem (CSP) defined in JSON.
+ *
+ * This function accepts a validated JSON object conforming to the
+ * CSP schema. It encodes the problem into an OR-Tools CP-SAT model,
+ * solves it, and returns the result as a JSON object.
+ *
+ * ### Expected Input
+ * - `variables`: Array of variable definitions, each with `name`, `type`, and a `domain`
+ *   (either `interval = [lb, ub]` or `values = [...]`).
+ * - `constraints`: Optional array of constraint definitions, supporting (more to come):
+ *   - `all_different`
+ *   - `linear`
+ *   - `equal`, `not_equal`, `greater_than`, `less_than`
+ *   - `forbidden_assignments` (currently simplified to force zero for each listed variable)
+ *
+ * ### Return Format
+ * - On success:
+ *   ```
+ *   {
+ *     "status": "solved",
+ *     "assignments": {
+ *       "varA": 1,
+ *       "varB": 2
+ *     }
+ *   }
+ *   ```
+ * - On failure (e.g., missing `variables`):
+ *   ```
+ *   {
+ *     "status": "error",
+ *     "message": "No variables specified in problem."
+ *   }
+ *   ```
+ * - No solution response:
+ *   ```
+ *   {
+ *     "status": "no_solution"
+ *   }
+ *   ```
+ *
+ * @param problem A JSON object representing a validated CSP problem description.
+ * @return A JSON object describing the solution, failure, or error state.
+ *
+ * @ingroup internal
+ * @see map_problem()
  */
+
 json CSPScheduler::solve(const json& problem) {
     CpModelBuilder model_builder;
     unordered_map<string, IntVar> var_map;
@@ -58,12 +93,27 @@ json CSPScheduler::solve(const json& problem) {
 }
 
 /**
- * @brief 
- * 
- * @param problem 
- * @param model_builder 
- * @param var_names 
- * @param var_map 
+ * Convert a high-level JSON CSP problem description into an OR-Tools model.
+ *
+ * This helper parses JSON-defined variables and constraints and
+ * translates them into CP-SAT model primitives using the OR-Tools
+ * C++ interface (`CpModelBuilder`, `IntVar`, and constraints).
+ *
+ * Variable types supported:
+ * - `"int"` and `"bool"` only, with domain as `[lb, ub]` or `values: [...]`
+ *
+ * Constraint types supported:
+ * - `"all_different"`
+ * - `"linear"` — with optional coefficients, relation (e.g., `"equal"`, `"greater_than"`), and target value
+ * - `"equal"`, `"not_equal"`, `"greater_than"`, `"less_than"` — for one var and constant
+ * - `"forbidden_assignments"` — naive implementation: all involved vars are constrained to 0
+ *
+ * @param problem The parsed CSP input in structured JSON format.
+ * @param model_builder Output CP-SAT builder to which constraints/vars are added.
+ * @param var_names Output list of variable names (to track assignment order).
+ * @param var_map Output mapping from variable names to their IntVar representations.
+ *
+ * @ingroup internal
  */
 void CSPScheduler::map_problem(
     const json& problem, 
