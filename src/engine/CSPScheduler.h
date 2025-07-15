@@ -1,8 +1,20 @@
+/**
+ * @file CSPScheduler.h
+ * @author skorm (skorm11x)
+ * @brief 
+ * @version 0.1
+ * @date 2025-07-14
+ */
+
 #pragma once
 #include <nlohmann/json.hpp>
 #include <ortools/sat/cp_model.h>
 #include <ortools/sat/cp_model.pb.h>
 
+/**
+ * @brief 
+ * 
+ */
 class CSPScheduler {
 public:
     nlohmann::json solve(const nlohmann::json& problem);

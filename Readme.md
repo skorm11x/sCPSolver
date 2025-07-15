@@ -87,3 +87,13 @@ basic sudoku tester
 ## TODOS
 1. Start using the Google test suite instead of random curl bash scripts 
 2. 
+
+### DOXYOGEN setup
+
+Great resource
+https://darkognu.eu/programming/tutorials/doxygen_tutorial_cpp/#installing-the-required-software
+
+```
+brew install doxygen
+brew install graphviz
+```

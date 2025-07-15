@@ -1,3 +1,11 @@
+/**
+ * @file CSPScheduler.cpp
+ * @author skorm (skorm11x)
+ * @brief 
+ * @version 0.1
+ * @date 2025-07-14
+ */
+
 #include "CSPScheduler.h"
 #include <ortools/sat/cp_model.h>
 #include <ortools/sat/cp_model.pb.h>
@@ -12,6 +20,12 @@ using namespace sat;
 using namespace nlohmann;
 using namespace std;
 
+/**
+ * @brief 
+ * 
+ * @param problem 
+ * @return json 
+ */
 json CSPScheduler::solve(const json& problem) {
     CpModelBuilder model_builder;
     unordered_map<string, IntVar> var_map;
@@ -43,6 +57,14 @@ json CSPScheduler::solve(const json& problem) {
     return result_json;
 }
 
+/**
+ * @brief 
+ * 
+ * @param problem 
+ * @param model_builder 
+ * @param var_names 
+ * @param var_map 
+ */
 void CSPScheduler::map_problem(
     const json& problem, 
     CpModelBuilder& model_builder,
