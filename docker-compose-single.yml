@@ -1,0 +1,11 @@
+version: '2.4'
+services:
+  sCPSolver:
+    image: sCPSolver:latest
+    hostname: sCPSolver
+    ports:
+      - 8080:8080
+    expose:
+      - '6969'
+    cpus: "16.0" # core limit
+    # cpuset: "0" # which cores

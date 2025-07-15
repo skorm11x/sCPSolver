@@ -1,10 +1,20 @@
 # Misc files
 *.DS_Store
+*.zip
+*.tar
 
 # Build files
 *.o
 *.sln
 
-# Build dirs
+# Build, Lib, Bin dirs
 build/
-or-tools*/
+lib/
+bin/
+or-tools*
+
+# Large test payloads
+test_payloads/
+
+# Docs
+docs/

@@ -1,0 +1,8 @@
+PROJECT_NAME           = @PROJECT_NAME@
+OUTPUT_DIRECTORY       = @PROJECT_SOURCE_DIR@/docs
+INPUT                  = @PROJECT_SOURCE_DIR@
+RECURSIVE              = YES
+EXCLUDE                = @PROJECT_SOURCE_DIR@/lib @PROJECT_SOURCE_DIR@/build @PROJECT_SOURCE_DIR@/bin
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+QUIET                  = YES
