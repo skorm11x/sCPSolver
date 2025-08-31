@@ -2,7 +2,6 @@
 #include <ortools/sat/cp_model.h>
 #include <ortools/sat/cp_model.pb.h>
 #include <iostream>
-#include <sstream>
 #include <vector>
 #include <string>
 #include <unordered_map>

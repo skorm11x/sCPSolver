@@ -6,13 +6,9 @@
 #include <ortools/sat/cp_model.h>
 #include <ortools/sat/cp_model.pb.h>
 
-namespace operations_research::sat {
-    class CpModelBuilder;
-    class IntVar;
-}
-namespace nlohmann {
-    class json;
-}
+using namespace std;
+using namespace operations_research::sat;
+using json = nlohmann::json;
 
 /**
  * @brief Solves constraint satisfaction problems (CSP) using the OR-Tools CP-SAT solver.
