@@ -1,40 +1,25 @@
-#include <unistd.h>
-#include <map>
-#include <string>
-#include <iostream>
-#include "CivetServer.h"
+#include "server.h"
 
-#include "routes.h"
-
-#include "routes/RootHandler.h"
-#include "routes/CSPSolverHandler.h"
-
-using namespace std;
-
-/**
- * @defgroup internal Internal workings
- * @brief starts the Civetweb server and loads routes
- * 
- */
-int main() {
+CivetServer* startServer(std::vector<std::string>& routes) {
     const char *options[] = { "listening_ports", "8080", 0 };
-    CivetServer server(options);
+    CivetServer* server = new CivetServer(options);
+    return server;
+}
 
-    RootHandler rootHandler;
-    CSPSolverHandler solveHandler;
-
-    map<string, CivetHandler*> route_map = {
-        {"/", &rootHandler},
-        {"/solve", &solveHandler}
-    };
-
-    for (const auto& [route, handler] : route_map) {
-        routes.push_back(route);
-        server.addHandler(route, *handler);
+int shutdownServer(CivetServer* server) {
+    if (!server) {
+        return -1;
     }
 
-    cout << "started scpsolver at localhost:8080" << endl;
+    try {
+        delete server;  // ~CivetServer() will stop listeners and cleanup
+        return 0;
+    } catch (...) {
+        return -1;
+    }
+}
 
-    while (true) { sleep(1); }
-    return 0;
+void addRoute(CivetServer* server,
+    const std::string& route, CivetHandler& handler) {
+    server->addHandler(route, handler);
 }
