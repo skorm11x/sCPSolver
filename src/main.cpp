@@ -1,4 +1,5 @@
 #include <sys/signal.h>
+#include <thread>
 #include <unistd.h>
 #include <map>
 #include <string>
@@ -48,6 +49,7 @@ int main() {
         routes.push_back(route);
         addRoute(server, route, *handler);
     }
+    this_thread::sleep_for(chrono::milliseconds(100));
 
     cout << "started scpsolver at localhost:8080" << endl;
 

@@ -5,42 +5,6 @@ project(scpsolver LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(scpsolver
-    src/main.cpp
-    src/server.cpp
-    src/routes.cpp
-    src/routes/RootHandler.cpp
-    src/routes/CSPSolverHandler.cpp
-    src/engine/CSPScheduler.cpp
-    src/util/SchemaValidator.cpp
-    lib/civetweb/src/CivetServer.cpp
-)
-
-set_target_properties(scpsolver PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
-)
-
-if(APPLE)
-    if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64|arm")
-        set(ORTOOLS_ROOT "${CMAKE_SOURCE_DIR}/lib/or-tools-9.14.6206/mac-arm")
-    else()
-        message(FATAL_ERROR "wip macOS architecture: ${CMAKE_SYSTEM_PROCESSOR}")
-    endif()
-
-    find_package(ortools REQUIRED PATHS ${ORTOOLS_ROOT}/lib/cmake/ortools NO_DEFAULT_PATH)
-    target_link_libraries(scpsolver PRIVATE ortools::ortools)
-    target_link_directories(scpsolver PRIVATE ${CMAKE_SOURCE_DIR}/lib/civetweb)
-    target_link_libraries(scpsolver PRIVATE civetweb pthread dl)
-
-    set_target_properties(scpsolver PROPERTIES
-        BUILD_RPATH "/lib/civetweb"
-        INSTALL_RPATH "/lib/civetweb"
-        MACOSX_RPATH ON
-    )
-else()
-    target_link_libraries(scpsolver PRIVATE civetweb pthread dl)
-endif()
-
 include(FetchContent)
 
 FetchContent_Declare(
@@ -58,12 +22,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json_schema_validator)
 
-target_link_libraries(scpsolver
-  PRIVATE
-    nlohmann_json::nlohmann_json
-    nlohmann_json_schema_validator
-)
-
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
@@ -71,12 +29,90 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-target_include_directories(scpsolver PRIVATE
-    ${CMAKE_BINARY_DIR}/_deps/nlohmann_json-src/include
-    ${CMAKE_BINARY_DIR}/_deps/json_schema_validator-src/include
+add_executable(scpsolver
+    src/main.cpp
+    src/server.cpp
+    src/routes.cpp
+    src/routes/RootHandler.cpp
+    src/routes/CSPSolverHandler.cpp
+    src/engine/CSPScheduler.cpp
+    src/util/SchemaValidator.cpp
+    lib/civetweb/src/CivetServer.cpp
+)
+
+target_include_directories(scpsolver PRIVATE ${CMAKE_SOURCE_DIR}/lib/civetweb/include)
+
+set_target_properties(scpsolver PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
+)
+
+add_executable(scpsolver_test
+    tests/main_test.cpp
+    tests/routes_test.cpp
+    src/server.cpp
+    src/routes.cpp
+    src/routes/RootHandler.cpp
+    src/routes/CSPSolverHandler.cpp
+    src/engine/CSPScheduler.cpp
+    src/util/SchemaValidator.cpp
+    lib/civetweb/src/CivetServer.cpp
+)
+
+target_include_directories(scpsolver_test PRIVATE
     ${CMAKE_BINARY_DIR}/_deps/googletest/googletest/include/gtest
+    ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/lib/civetweb/include
 )
+
+target_link_directories(scpsolver_test PRIVATE ${CMAKE_SOURCE_DIR}/lib/civetweb)
+
+set_target_properties(scpsolver_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
+)
+
+if(APPLE)
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64|arm")
+        set(ORTOOLS_ROOT "${CMAKE_SOURCE_DIR}/lib/or-tools-9.14.6206/mac-arm")
+    else()
+        message(FATAL_ERROR "wip macOS architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+
+    find_package(ortools REQUIRED PATHS ${ORTOOLS_ROOT}/lib/cmake/ortools NO_DEFAULT_PATH)
+    target_link_libraries(scpsolver 
+      PRIVATE 
+      ortools::ortools 
+      civetweb 
+      Threads::Threads 
+      dl    
+      nlohmann_json::nlohmann_json
+      nlohmann_json_schema_validator
+    )
+    target_link_directories(scpsolver PRIVATE ${CMAKE_SOURCE_DIR}/lib/civetweb)
+
+    set_target_properties(scpsolver PROPERTIES
+        BUILD_RPATH "/lib/civetweb"
+        INSTALL_RPATH "/lib/civetweb"
+        MACOSX_RPATH ON
+    )
+
+    target_link_libraries(scpsolver_test
+      PRIVATE 
+      GTest::gtest 
+      GTest::gtest_main
+      ortools::ortools  
+      civetweb 
+      curl
+      Threads::Threads
+      nlohmann_json::nlohmann_json
+      nlohmann_json_schema_validator
+    )
+else()
+    target_link_libraries(scpsolver PRIVATE civetweb Threads::Threads dl)
+endif()
+
+enable_testing()
+add_test(NAME AllTests COMMAND scpsolver_test)
+
 
 find_package(Doxygen)
 if(Doxygen_FOUND)

@@ -13,8 +13,8 @@ lib/
 bin/
 or-tools*
 
-# Large test payloads
-test_payloads/
+# Large test payloads <25MB
+hard2.json
 
 # Docs
 docs/
