@@ -43,12 +43,18 @@ cmake -S . -B build && cmake --build build
 A docker image is used to deploy with a single docker compose file also provided.
 You can also compile and run locally
 
-#### Local
+#### Local Debug
 
 ```
-cmake -S . -B build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=ON
 cmake --build build
-cd build
+```
+
+#### Local Release
+
+```
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
 sign it locally to assist with mac developer settings:

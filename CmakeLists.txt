@@ -5,6 +5,19 @@ project(scpsolver LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(COVERAGE "Enable code coverage flag" ON)
+
+if(COVERAGE AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang"))
+    add_compile_options(
+      $<$<CONFIG:Debug>:-fprofile-instr-generate>
+      $<$<CONFIG:Debug>:-fcoverage-mapping>
+      $<$<CONFIG:Debug>:-O0>
+    )
+    add_link_options(
+      $<$<CONFIG:Debug>:-fprofile-instr-generate>
+    )
+endif()
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -106,6 +119,17 @@ if(APPLE)
       nlohmann_json::nlohmann_json
       nlohmann_json_schema_validator
     )
+
+    if(COVERAGE AND (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang"))
+        target_compile_options(scpsolver_test PRIVATE 
+          $<$<CONFIG:Debug>:-fprofile-instr-generate>
+          $<$<CONFIG:Debug>:-fcoverage-mapping>
+          $<$<CONFIG:Debug>:-O0>
+        )
+        target_link_options(scpsolver_test PRIVATE 
+          $<$<CONFIG:Debug>:-fprofile-instr-generate>
+        )
+    endif()
 else()
     target_link_libraries(scpsolver PRIVATE civetweb Threads::Threads dl)
 endif()
