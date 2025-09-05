@@ -1,6 +1,6 @@
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 cmake_minimum_required(VERSION 4.0)
-project(scpsolver LANGUAGES CXX)
+project(scpsolver LANGUAGES CXX VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,27 +20,34 @@ endif()
 
 include(FetchContent)
 
-FetchContent_Declare(
-  nlohmann_json
-  GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG v3.11.3
-)
-FetchContent_MakeAvailable(nlohmann_json)
+# useful function declaration in cmakelists for dynamic libraries
+function(add_or_fetch_lib lib_name git_repo git_tag)
+  set(lib_dir "${CMAKE_SOURCE_DIR}/lib/${lib_name}")
 
-# (requires nlohmann/json)
-FetchContent_Declare(
-  json_schema_validator
-  GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
-  GIT_TAG 2.3.0
-)
-FetchContent_MakeAvailable(json_schema_validator)
+  if(EXISTS "${lib_dir}/CMakeLists.txt")
+    message(STATUS "Using existing ${lib_name} from ${lib_dir}")
+    add_subdirectory(${lib_dir})
+  else()
+    message(STATUS "Fetching ${lib_name} via FetchContent")
 
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+    FetchContent_Declare(
+      ${lib_name}
+      GIT_REPOSITORY ${git_repo}
+      GIT_TAG ${git_tag}
+      SOURCE_DIR ${lib_dir}
+    )
+
+    FetchContent_MakeAvailable(${lib_name})
+  endif()
+endfunction()
+
+# TODO: handle or-tools per isa, for now assume dev setup involves library 
+# TODO: handle civetweb upgrades (open pr), for now assume dev setup involves library
+# e.g. 3/5 can be stored
+# add_or_fetch_lib(civetweb https://github.com/civetweb/civetweb.git v1.16)
+add_or_fetch_lib(nlohmann_json https://github.com/nlohmann/json.git v3.11.3)
+add_or_fetch_lib(json_schema_validator https://github.com/pboettch/json-schema-validator.git 2.3.0)
+add_or_fetch_lib(googletest https://github.com/google/googletest.git 03597a01ee50ed33e9dfd640b249b4be3799d395)
 
 add_executable(scpsolver
     src/main.cpp
