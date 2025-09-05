@@ -94,10 +94,11 @@ O*(d^n) where d = domain size max, n = number variables
 basic sudoku tester
 
 ## MVP submission TODOS
-1. ~~Start using the Google test suite~~
-2. Loose constraint examples (basic) functional
-3. 
-4. 
+1. ~~Start using the Google test suite~~ 
+2. Add classic seating problem example + visuals for readme, wiki
+3. Loose constraint examples (basic) functional
+4. Add logo, diagrams showing use for devs
+5. Ensure base engine covers simple problem set of forced example (conduit)
 
 ## General TODOS
 1. Pipeline setup (coverage, release builds)
