@@ -45,11 +45,15 @@ private:
      * @param model_builder CP-SAT model construct to build on.
      * @param var_names Output list of variable names (order matters for assignment output).
      * @param var_map Output map of variable names to OR-Tools IntVar.
+     * @param soft_constraint_ind Soft constraint indicators, values that id when violation occurs.
+     * @param soft_constraint_weights Soft constraint weights, values that scale the violations.
      */
     void map_problem(
         const json& problem,
         CpModelBuilder& model_builder,
         vector<string>& var_names,
-        unordered_map<string, IntVar>& var_map
+        unordered_map<string, IntVar>& var_map,
+        vector<BoolVar>& soft_constraint_ind,
+        vector<double>& soft_constraint_weights
     );
 };

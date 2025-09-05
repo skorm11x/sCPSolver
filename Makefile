@@ -1,4 +1,4 @@
-.PHONY: gen_debug_build gen_release_build compile_build build clean
+.PHONY: gen_debug_build gen_release_build compile_build coverage docs clean
 
 gen_debug_build:
 	cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=ON
@@ -14,5 +14,8 @@ coverage:
 	llvm-profdata merge -sparse ./bin/default.profraw -o ./bin/default.profdata
 	llvm-cov show ./bin/scpsolver_test -instr-profile=./bin/default.profdata -format=html -output-dir=coverage_report src/
 
+docs:
+	cmake --build build --target docs
+
 clean:
-	rm -rf build bin coverage_report
+	rm -rf build bin coverage_report docs

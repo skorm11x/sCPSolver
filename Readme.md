@@ -1,15 +1,17 @@
 # SCPSOLVER
 
-Solve easy, medium, and moderate difficulty constraint programming problems in the scheduling realm efficiently!
+Solve easy, medium, and moderate difficulty (arbitrary marks) constraint programming problems in the scheduling realm efficiently!
 
 This program utilizes Civet server as its Rest callback based execution for RPC and upon Google's or-tools for multithreaded CSP-SAT problem solving. 
 https://developers.google.com/optimization/install/cpp/binary_linux#ubuntu_1
 
 Long running problems could introduce scalability problems that are not currently being addressed (e.g. tasking the program with multiple long running problems) but are theorized to be possibly addressed with cloud auto scaling solutions.
 
+Potentially never observable in the non-logistic world where there is usually a fairly robust constraint set that restricts the problem space. Fits in with the target of easy, medium, and moderate but not difficult or difficult + (arbitrary marks) problems.
+
 ## Getting started
 
-This Schedule solver leverages google OR-Tools and ASIO libraries. Chose not to utilize gRPC, even though it is a fine way to go about this, to increase adoption and ease of use for end developers who want to interact with SCPSOLVE.
+This Schedule solver leverages google OR-Tools and Civetweb libraries. Chose not to utilize gRPC, even though it is a fine way to go about this, to increase adoption and ease of use for end developers who want to interact with SCPSOLVE.
 
 ### Setup && Prereqs
 
@@ -46,15 +48,16 @@ You can also compile and run locally
 #### Local Debug
 
 ```
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=ON
-cmake --build build
+make gen_debug_build
+make compile_build
+./bin/scpsolver
 ```
 
 #### Local Release
 
 ```
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+make gen_release_build
+make compile_build
 ```
 
 sign it locally to assist with mac developer settings:
@@ -80,7 +83,7 @@ Run
 ```
 
 #### Dockerfile
-WIP, update linux build and mac builds. Docker base needs to detect host ISA to pull right binaries
+WIP see below. 
 
 ### Examples
 
@@ -90,9 +93,16 @@ O*(d^n) where d = domain size max, n = number variables
 
 basic sudoku tester
 
-## TODOS
-1. Start using the Google test suite instead of random curl bash scripts 
-2. 
+## MVP submission TODOS
+1. ~~Start using the Google test suite~~
+2. Loose constraint examples (basic) functional
+3. 
+4. 
+
+## General TODOS
+1. Pipeline setup (coverage, release builds)
+2. Finish out static lib + static lib pull from CMakeLists (or-tools, civetweb)
+3. Docker setup w/ rocky linux base
 
 ### DOXYOGEN setup
 
@@ -107,5 +117,5 @@ brew install graphviz
 generating docs:
 
 ```
-cmake --build build --target docs
+make docs
 ```

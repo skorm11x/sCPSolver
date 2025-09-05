@@ -21,3 +21,6 @@ docs/
 
 # linters
 *.cache
+
+# coverage generated docs (setup pipeline later)
+coverage_report/
